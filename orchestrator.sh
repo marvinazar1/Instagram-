@@ -8,10 +8,25 @@
 #   ./orchestrator.sh                                   # random topic, render only (dry-run publish)
 #   ./orchestrator.sh --pillar market_updates            # pin the content pillar
 #   ./orchestrator.sh --publish --video-url https://...  # render and actually publish to Instagram
+#
+# If your environment can't download Remotion's own Chrome Headless Shell
+# (e.g. a network-restricted sandbox/CI runner), point it at a Chrome/Chromium
+# binary already on disk via REMOTION_BROWSER_EXECUTABLE. Full Chrome builds
+# only support the new headless mode, so pair it with REMOTION_CHROME_MODE:
+#   REMOTION_BROWSER_EXECUTABLE=/opt/pw-browsers/chromium \
+#   REMOTION_CHROME_MODE=chrome-for-testing \
+#   ./orchestrator.sh
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
+
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
 
 PILLAR=""
 TOPIC_ID=""
@@ -59,8 +74,10 @@ python3 pipeline/generate_audio.py
 
 echo "==> [3/4] Rendering video"
 mkdir -p out
-npx remotion render src/index.ts RealEstateReel "$OUTPUT_VIDEO" \
-  --props=pipeline/output/props.json
+RENDER_ARGS=(--props=pipeline/output/props.json)
+[[ -n "${REMOTION_BROWSER_EXECUTABLE:-}" ]] && RENDER_ARGS+=(--browser-executable="$REMOTION_BROWSER_EXECUTABLE")
+[[ -n "${REMOTION_CHROME_MODE:-}" ]] && RENDER_ARGS+=(--chrome-mode="$REMOTION_CHROME_MODE")
+npx remotion render src/index.ts RealEstateReel "$OUTPUT_VIDEO" "${RENDER_ARGS[@]}"
 
 echo "==> [4/4] Publishing to Instagram"
 if [[ "$PUBLISH" == true ]]; then
