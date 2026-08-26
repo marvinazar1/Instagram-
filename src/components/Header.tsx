@@ -1,9 +1,11 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { FONT_FAMILY } from "../constants";
+import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { BRAND, FONT_FAMILY } from "../constants";
 
 export type HeaderProps = {
   readonly pillarLabel: string;
   readonly agentName: string;
+  /** Path relative to the `public/` directory, e.g. "logo.png". Optional — falls back to a gold house mark. */
+  readonly logoSrc?: string;
   readonly segmentCount: number;
   readonly activeSegmentIndex: number;
 };
@@ -11,6 +13,7 @@ export type HeaderProps = {
 export const Header: React.FC<HeaderProps> = ({
   pillarLabel,
   agentName,
+  logoSrc,
   segmentCount,
   activeSegmentIndex,
 }) => {
@@ -43,12 +46,10 @@ export const Header: React.FC<HeaderProps> = ({
                 height: 4,
                 borderRadius: 2,
                 backgroundColor:
-                  index <= activeSegmentIndex
-                    ? "rgba(255,255,255,0.95)"
-                    : "rgba(255,255,255,0.3)",
+                  index <= activeSegmentIndex ? BRAND.gold : "rgba(255,255,255,0.25)",
                 boxShadow:
                   index === activeSegmentIndex
-                    ? "0 0 10px rgba(255,255,255,0.8)"
+                    ? `0 0 10px ${BRAND.gold}cc`
                     : undefined,
               }}
             />
@@ -65,48 +66,52 @@ export const Header: React.FC<HeaderProps> = ({
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              color: "white",
+              gap: 10,
+              color: BRAND.white,
               fontSize: 26,
               fontWeight: 700,
-              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+              textShadow: "0 2px 8px rgba(0,0,0,0.7)",
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M3 11.5L12 4l9 7.5"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M5.5 10v9a1 1 0 0 0 1 1H17.5a1 1 0 0 0 1-1v-9"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10 20v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            {logoSrc ? (
+              <Img src={staticFile(logoSrc)} style={{ height: 32, width: "auto" }} />
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M3 11.5L12 4l9 7.5"
+                  stroke={BRAND.gold}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M5.5 10v9a1 1 0 0 0 1 1H17.5a1 1 0 0 0 1-1v-9"
+                  stroke={BRAND.gold}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 20v-5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V20"
+                  stroke={BRAND.gold}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
             {agentName}
           </div>
           <div
             style={{
-              color: "white",
+              color: BRAND.white,
               fontSize: 20,
               fontWeight: 600,
               padding: "8px 18px",
               borderRadius: 999,
-              backgroundColor: "rgba(255,255,255,0.1)",
+              backgroundColor: "rgba(0,0,0,0.45)",
               backdropFilter: "blur(18px)",
-              border: "1px solid rgba(255,255,255,0.22)",
+              border: `1px solid ${BRAND.gold}55`,
             }}
           >
             {pillarLabel}

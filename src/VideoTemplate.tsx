@@ -43,6 +43,7 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
         <Header
           pillarLabel={content.pillarLabel}
           agentName={content.agentName}
+          logoSrc={content.logoSrc}
           segmentCount={segments.length}
           activeSegmentIndex={index}
         />
@@ -52,7 +53,7 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
 
   return (
     <AbsoluteFill>
-      <AnimatedBackground pillar={content.pillar} />
+      <AnimatedBackground />
       {audioSrc ? <Audio src={staticFile(audioSrc)} /> : null}
       {sequences}
       <TransitionFlash boundaries={boundaries} />

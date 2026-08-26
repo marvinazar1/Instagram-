@@ -4,30 +4,33 @@ export const VIDEO_WIDTH = 1080;
 export const VIDEO_HEIGHT = 1920;
 export const VIDEO_FPS = 30;
 
-// Gradient color stops per content pillar, kept separate from the angle so
-// AnimatedBackground can drift the angle continuously for constant on-screen
-// motion (a static frame reads as "dead" and hurts watch-time on Reels).
-export const PILLAR_GRADIENT_STOPS: Record<string, string> = {
-  market_updates: "#0f2027 0%, #203a43 55%, #2c5364 100%",
-  buyer_tips: "#1a2a6c 0%, #2b5876 55%, #4e4376 100%",
-  seller_tips: "#134e5e 0%, #2f7d5e 55%, #71b280 100%",
-  homeowner_advice: "#3a1c71 0%, #8a2387 55%, #d76d77 100%",
-  default: "#232526 0%, #414345 100%",
-};
-
-export const gradientAt = (pillar: string, angleDeg: number): string => {
-  const stops = PILLAR_GRADIENT_STOPS[pillar] ?? PILLAR_GRADIENT_STOPS.default;
-  return `linear-gradient(${angleDeg}deg, ${stops})`;
-};
+// Brand standard: black / white / gold ONLY, background always predominantly
+// black/dark, high-end cinematic feel. Every color used anywhere in the
+// video must come from this palette — do not introduce other hues.
+export const BRAND = {
+  black: "#000000",
+  nearBlack: "#0a0908",
+  charcoal: "#161310",
+  gold: "#d4af37",
+  goldBright: "#f2d375",
+  goldDeep: "#7a5f1f",
+  white: "#ffffff",
+} as const;
 
 // Accent color used to highlight emphasized words/numbers in on-screen text —
 // the "bold keyword" technique that draws the eye and boosts caption
 // readability/retention.
-export const EMPHASIS_COLOR = "#ffd23f";
+export const EMPHASIS_COLOR = BRAND.goldBright;
 
-// Hex colors pulled from a pillar's own gradient stops, for tinting the
-// floating glow orbs in AnimatedBackground so they always match the scene.
-export const pillarColors = (pillar: string): string[] => {
-  const stops = PILLAR_GRADIENT_STOPS[pillar] ?? PILLAR_GRADIENT_STOPS.default;
-  return stops.match(/#[0-9a-fA-F]{6}/g) ?? ["#414345"];
-};
+// The video background is always this black-to-charcoal gradient with a
+// slowly drifting angle (see AnimatedBackground) — never pillar- or
+// content-dependent, per brand standard.
+export const gradientAt = (angleDeg: number): string =>
+  `linear-gradient(${angleDeg}deg, ${BRAND.black} 0%, ${BRAND.charcoal} 55%, ${BRAND.nearBlack} 100%)`;
+
+// Gold-only tones for the floating glow orbs, cycled across orbs.
+export const GLOW_COLORS: readonly string[] = [
+  BRAND.gold,
+  BRAND.goldDeep,
+  BRAND.goldBright,
+];

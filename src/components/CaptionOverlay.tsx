@@ -1,6 +1,6 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import type { ReelSegment } from "../content-types";
-import { FONT_FAMILY } from "../constants";
+import { BRAND, FONT_FAMILY } from "../constants";
 import { KineticText } from "./KineticText";
 
 export type CaptionOverlayProps = {
@@ -34,12 +34,12 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({ segment }) => {
             fontFamily: FONT_FAMILY,
             fontSize: CAPTION_FONT_SIZE,
             fontWeight: 600,
-            color: "white",
+            color: BRAND.white,
             textAlign: "center",
-            backgroundColor: "rgba(255,255,255,0.08)",
+            backgroundColor: "rgba(0,0,0,0.55)",
             backdropFilter: "blur(18px)",
-            border: "1px solid rgba(255,255,255,0.18)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+            border: `1px solid ${BRAND.gold}44`,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
             padding: "14px 26px",
             borderRadius: 18,
             maxWidth: "90%",

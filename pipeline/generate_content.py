@@ -173,6 +173,11 @@ def main() -> None:
         help="Name/brand shown in the video header",
     )
     parser.add_argument(
+        "--logo-src",
+        default=os.environ.get("LOGO_SRC", ""),
+        help="Path to a logo image relative to public/, e.g. 'logo.png'. Optional — omit for a text-only header mark.",
+    )
+    parser.add_argument(
         "--model",
         default=os.environ.get("ANTHROPIC_MODEL", DEFAULT_MODEL),
         help="Anthropic model id to use",
@@ -199,6 +204,7 @@ def main() -> None:
         "pillar": pillar,
         "pillarLabel": pillar_label(pillar),
         "agentName": args.agent_name,
+        **({"logoSrc": args.logo_src} if args.logo_src else {}),
         "hook": generated["hook"],
         "hookDurationInSeconds": generated["hook_duration_seconds"],
         "scenes": [

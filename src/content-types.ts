@@ -7,6 +7,8 @@ export type ReelContent = {
   readonly pillar: string;
   readonly pillarLabel: string;
   readonly agentName: string;
+  /** Path relative to the `public/` directory, e.g. "logo.png". Optional — falls back to a text mark. */
+  readonly logoSrc?: string;
   readonly hook: string;
   readonly hookDurationInSeconds: number;
   readonly scenes: ReelScene[];

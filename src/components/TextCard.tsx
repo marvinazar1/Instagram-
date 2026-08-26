@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { ReelSegment } from "../content-types";
-import { EMPHASIS_COLOR, FONT_FAMILY } from "../constants";
+import { BRAND, FONT_FAMILY } from "../constants";
 import { KineticText } from "./KineticText";
 
 export type TextCardProps = {
@@ -73,11 +73,11 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
                 marginBottom: 24,
                 padding: "10px 24px",
                 borderRadius: 999,
-                backgroundColor: "rgba(255,255,255,0.14)",
+                backgroundColor: "rgba(0,0,0,0.5)",
                 backdropFilter: "blur(18px)",
-                border: "1px solid rgba(255,255,255,0.35)",
-                boxShadow: `0 0 32px ${EMPHASIS_COLOR}55`,
-                color: "white",
+                border: `1px solid ${BRAND.gold}88`,
+                boxShadow: `0 0 32px ${BRAND.gold}55`,
+                color: BRAND.white,
                 fontSize: 24,
                 fontWeight: 700,
                 letterSpacing: 1,
@@ -88,7 +88,7 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
           ) : null}
           <div
             style={{
-              color: "white",
+              color: BRAND.white,
               fontSize: isHook ? 76 : 58,
               fontWeight: 800,
               lineHeight: 1.15,
