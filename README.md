@@ -1,4 +1,4 @@
-# Remotion video
+# Real Estate Engine
 
 <p align="center">
   <a href="https://github.com/remotion-dev/logo">
@@ -9,7 +9,8 @@
   </a>
 </p>
 
-Welcome to your Remotion project!
+A Remotion-based video generation engine for real estate listing videos, with a
+Python side for narration (ElevenLabs) and media fetching.
 
 ## Commands
 
@@ -17,7 +18,11 @@ Welcome to your Remotion project!
 
 ```console
 npm i
+pip install -r requirements.txt
 ```
+
+Copy `.env.example` to `.env` and set `ELEVENLABS_API_KEY` before running any
+narration scripts.
 
 **Start Preview**
 
