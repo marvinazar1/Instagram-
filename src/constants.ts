@@ -24,3 +24,10 @@ export const gradientAt = (pillar: string, angleDeg: number): string => {
 // the "bold keyword" technique that draws the eye and boosts caption
 // readability/retention.
 export const EMPHASIS_COLOR = "#ffd23f";
+
+// Hex colors pulled from a pillar's own gradient stops, for tinting the
+// floating glow orbs in AnimatedBackground so they always match the scene.
+export const pillarColors = (pillar: string): string[] => {
+  const stops = PILLAR_GRADIENT_STOPS[pillar] ?? PILLAR_GRADIENT_STOPS.default;
+  return stops.match(/#[0-9a-fA-F]{6}/g) ?? ["#414345"];
+};

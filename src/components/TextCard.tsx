@@ -6,8 +6,8 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { ReelSegment } from "../content-types";
-import { FONT_FAMILY } from "../constants";
-import { renderEmphasized } from "../emphasis";
+import { EMPHASIS_COLOR, FONT_FAMILY } from "../constants";
+import { KineticText } from "./KineticText";
 
 export type TextCardProps = {
   readonly segment: ReelSegment;
@@ -18,11 +18,17 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
   const { fps, durationInFrames } = useVideoConfig();
 
   // Slight underdamped bounce (rather than a flat ease-in) reads as more
-  // energetic and helps each new line register as a pattern interrupt.
+  // energetic and helps each new line register as a pattern interrupt. The
+  // word-by-word cascade inside KineticText handles the text's own reveal,
+  // so this only drives the container pop + the CTA badge.
   const entrance = spring({
     frame,
     fps,
     config: { damping: 14, stiffness: 200, mass: 0.6 },
+  });
+  const entranceOpacity = interpolate(frame, [0, 8], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
   });
 
   const isCta = segment.kind === "cta";
@@ -41,7 +47,7 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
 
   const scale = interpolate(entrance, [0, 1], [0.8, 1]);
   const translateY = interpolate(entrance, [0, 1], [40, 0]);
-  const opacity = Math.min(entrance, exitOpacity);
+  const opacity = Math.min(entranceOpacity, exitOpacity);
 
   return (
     <AbsoluteFill>
@@ -65,16 +71,19 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
               style={{
                 display: "inline-block",
                 marginBottom: 24,
-                padding: "8px 22px",
+                padding: "10px 24px",
                 borderRadius: 999,
-                backgroundColor: "white",
-                color: "#111",
+                backgroundColor: "rgba(255,255,255,0.14)",
+                backdropFilter: "blur(18px)",
+                border: "1px solid rgba(255,255,255,0.35)",
+                boxShadow: `0 0 32px ${EMPHASIS_COLOR}55`,
+                color: "white",
                 fontSize: 24,
                 fontWeight: 700,
                 letterSpacing: 1,
               }}
             >
-              DON'T SCROLL PAST THIS
+              DON&apos;T SCROLL PAST THIS
             </div>
           ) : null}
           <div
@@ -86,7 +95,7 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
               textShadow: "0 6px 24px rgba(0,0,0,0.45)",
             }}
           >
-            {renderEmphasized(segment.text)}
+            <KineticText text={segment.text} fontSize={isHook ? 76 : 58} />
           </div>
         </div>
       </AbsoluteFill>

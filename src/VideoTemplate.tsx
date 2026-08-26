@@ -9,6 +9,7 @@ import { Header } from "./components/Header";
 import { TextCard } from "./components/TextCard";
 import { CaptionOverlay } from "./components/CaptionOverlay";
 import { AnimatedBackground } from "./components/AnimatedBackground";
+import { TransitionFlash } from "./components/TransitionFlash";
 import { getSegments, type ReelContent } from "./content-types";
 
 export type VideoTemplateProps = {
@@ -25,10 +26,12 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
   const segments = getSegments(content);
 
   let startFrame = 0;
+  const boundaries: number[] = [];
   const sequences = segments.map((segment, index) => {
     const durationInFrames = Math.round(segment.durationInSeconds * fps);
     const from = startFrame;
     startFrame += durationInFrames;
+    if (index > 0) boundaries.push(from);
 
     return (
       <Sequence key={index} from={from} durationInFrames={durationInFrames}>
@@ -52,6 +55,7 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
       <AnimatedBackground pillar={content.pillar} />
       {audioSrc ? <Audio src={staticFile(audioSrc)} /> : null}
       {sequences}
+      <TransitionFlash boundaries={boundaries} />
     </AbsoluteFill>
   );
 };
