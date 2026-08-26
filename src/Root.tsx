@@ -2,12 +2,42 @@ import "./index.css";
 import { Composition } from "remotion";
 import { HelloWorld } from "./HelloWorld";
 import { Logo } from "./HelloWorld/Logo";
+import { VideoTemplate } from "./VideoTemplate";
+import { sampleContent } from "./sample-content";
+import { getTotalDurationInSeconds } from "./content-types";
+import { VIDEO_FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from "./constants";
+import type { ReelContent } from "./content-types";
 
 // Each <Composition> is an entry in the sidebar!
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        // Vertical 9:16 Reel/Story template driven by generated content.
+        // Render with: npx remotion render src/index.ts RealEstateReel out/reel.mp4 --props=pipeline/output/content.json
+        id="RealEstateReel"
+        component={VideoTemplate}
+        fps={VIDEO_FPS}
+        width={VIDEO_WIDTH}
+        height={VIDEO_HEIGHT}
+        durationInFrames={Math.round(
+          getTotalDurationInSeconds(sampleContent) * VIDEO_FPS,
+        )}
+        defaultProps={{
+          content: sampleContent,
+          audioSrc: undefined,
+        }}
+        calculateMetadata={async ({ props }) => {
+          const content = props.content as ReelContent;
+          return {
+            durationInFrames: Math.round(
+              getTotalDurationInSeconds(content) * VIDEO_FPS,
+            ),
+          };
+        }}
+      />
+
       <Composition
         // You can take the "id" to render a video:
         // npx remotion render HelloWorld

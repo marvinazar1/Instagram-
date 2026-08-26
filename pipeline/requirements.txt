@@ -1,0 +1,8 @@
+anthropic>=0.40.0
+python-dotenv>=1.0.1
+requests>=2.32.0
+
+# Optional, only needed for --provider kokoro in generate_audio.py:
+# kokoro
+# soundfile
+# numpy

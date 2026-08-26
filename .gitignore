@@ -6,3 +6,13 @@ build
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# Generated per-run pipeline artifacts (content, audio, history).
+pipeline/output/
+public/audio/*
+!public/audio/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
