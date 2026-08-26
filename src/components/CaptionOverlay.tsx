@@ -1,6 +1,7 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import type { ReelSegment } from "../content-types";
 import { FONT_FAMILY } from "../constants";
+import { renderEmphasized } from "../emphasis";
 
 export type CaptionOverlayProps = {
   readonly segment: ReelSegment;
@@ -39,7 +40,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({ segment }) => {
             maxWidth: "90%",
           }}
         >
-          {segment.text}
+          {renderEmphasized(segment.text)}
         </div>
       </div>
     </AbsoluteFill>

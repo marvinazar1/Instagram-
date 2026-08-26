@@ -6,21 +6,23 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { ReelSegment } from "../content-types";
-import { FONT_FAMILY, PILLAR_GRADIENTS } from "../constants";
+import { FONT_FAMILY } from "../constants";
+import { renderEmphasized } from "../emphasis";
 
 export type TextCardProps = {
   readonly segment: ReelSegment;
-  readonly pillar: string;
 };
 
-export const TextCard: React.FC<TextCardProps> = ({ segment, pillar }) => {
+export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
+  // Slight underdamped bounce (rather than a flat ease-in) reads as more
+  // energetic and helps each new line register as a pattern interrupt.
   const entrance = spring({
     frame,
     fps,
-    config: { damping: 200, stiffness: 180 },
+    config: { damping: 14, stiffness: 200, mass: 0.6 },
   });
 
   const isCta = segment.kind === "cta";
@@ -37,14 +39,12 @@ export const TextCard: React.FC<TextCardProps> = ({ segment, pillar }) => {
         extrapolateRight: "clamp",
       });
 
-  const scale = interpolate(entrance, [0, 1], [0.9, 1]);
+  const scale = interpolate(entrance, [0, 1], [0.8, 1]);
   const translateY = interpolate(entrance, [0, 1], [40, 0]);
   const opacity = Math.min(entrance, exitOpacity);
 
-  const gradient = PILLAR_GRADIENTS[pillar] ?? PILLAR_GRADIENTS.default;
-
   return (
-    <AbsoluteFill style={{ background: gradient }}>
+    <AbsoluteFill>
       <AbsoluteFill
         style={{
           alignItems: "center",
@@ -86,7 +86,7 @@ export const TextCard: React.FC<TextCardProps> = ({ segment, pillar }) => {
               textShadow: "0 6px 24px rgba(0,0,0,0.45)",
             }}
           >
-            {segment.text}
+            {renderEmphasized(segment.text)}
           </div>
         </div>
       </AbsoluteFill>

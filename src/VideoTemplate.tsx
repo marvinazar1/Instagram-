@@ -8,8 +8,8 @@ import {
 import { Header } from "./components/Header";
 import { TextCard } from "./components/TextCard";
 import { CaptionOverlay } from "./components/CaptionOverlay";
+import { AnimatedBackground } from "./components/AnimatedBackground";
 import { getSegments, type ReelContent } from "./content-types";
-import { PILLAR_GRADIENTS } from "./constants";
 
 export type VideoTemplateProps = {
   readonly content: ReelContent;
@@ -23,7 +23,6 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
 }) => {
   const { fps } = useVideoConfig();
   const segments = getSegments(content);
-  const gradient = PILLAR_GRADIENTS[content.pillar] ?? PILLAR_GRADIENTS.default;
 
   let startFrame = 0;
   const sequences = segments.map((segment, index) => {
@@ -34,11 +33,9 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
     return (
       <Sequence key={index} from={from} durationInFrames={durationInFrames}>
         {segment.kind === "scene" ? (
-          <AbsoluteFill style={{ background: gradient }}>
-            <CaptionOverlay segment={segment} />
-          </AbsoluteFill>
+          <CaptionOverlay segment={segment} />
         ) : (
-          <TextCard segment={segment} pillar={content.pillar} />
+          <TextCard segment={segment} />
         )}
         <Header
           pillarLabel={content.pillarLabel}
@@ -51,7 +48,8 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
   });
 
   return (
-    <AbsoluteFill style={{ background: gradient }}>
+    <AbsoluteFill>
+      <AnimatedBackground pillar={content.pillar} />
       {audioSrc ? <Audio src={staticFile(audioSrc)} /> : null}
       {sequences}
     </AbsoluteFill>

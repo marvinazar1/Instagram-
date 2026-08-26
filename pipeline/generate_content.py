@@ -43,21 +43,26 @@ this exact shape:
 
 {
   "hook": string,               // <= 12 words, spoken in the first 2-3 seconds, must stop the scroll
-  "hook_duration_seconds": number,  // 2 to 3.5
+  "hook_duration_seconds": number,  // 2 to 3
   "scenes": [                   // 3 to 5 scenes covering the key points, in order
-    {"text": string, "duration_seconds": number}  // text <= 18 words, duration 3 to 5
+    {"text": string, "duration_seconds": number}  // text <= 16 words, duration 2.5 to 4.5
   ],
   "cta": string,                // <= 14 words, matches the topic's call to action
-  "cta_duration_seconds": number,  // 2.5 to 4
+  "cta_duration_seconds": number,  // 2.5 to 3.5
   "caption": string,            // Instagram caption, 2-4 short lines, conversational, 1-2 emoji max, ends with a soft CTA, NO hashtags in this field
   "hashtags": [string]          // 8 to 15 relevant real-estate hashtags, each starting with '#', no spaces
 }
 
-Writing rules:
+Writing rules (this is a retention-optimized Reel — every rule below exists
+to keep a scrolling viewer watching to the end):
 - Write for a vertical, fast-paced Instagram Reel voiceover. Punchy, plain-spoken, no jargon.
 - Each scene's "text" is a single spoken line, not a paragraph.
 - Do not fabricate specific statistics, rates, or prices. Speak in general, defensible terms.
-- Keep the total spoken script under 45 seconds when read aloud.
+- Keep the total spoken script (hook + scenes + cta) between 18 and 28 seconds when read aloud at a natural pace (~2.5-3.5 words/second) — shorter, tighter scripts get watched to completion far more often than long ones.
+- Open loop, don't resolve too early: the hook must create a specific curiosity gap (a number, a contrarian claim, or a named mistake) WITHOUT giving away the answer. Save the single most valuable or surprising point for the LAST scene, not the first, so there's a reason to keep watching.
+- End each non-final scene on a small forward-pull when it fits naturally ("but here's the part most people miss...") rather than a fully closed statement.
+- The CTA should explicitly pay off the hook's open loop (reference what was promised) so it reads as the natural resolution, not a bolted-on ask.
+- Emphasis markup: in "hook", each scene "text", and "cta", wrap the ONE (at most two) most important word or number per line in double asterisks, e.g. "Prices dropped **12%** last month." This drives an on-screen highlight color — used sparingly it draws the eye, used on every word it does nothing, so be selective.
 """
 
 

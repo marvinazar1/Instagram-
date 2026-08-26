@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -52,9 +53,16 @@ KOKORO_ONNX_MODEL_URL = f"{KOKORO_ONNX_RELEASE}/kokoro-v1.0.onnx"
 KOKORO_ONNX_VOICES_URL = f"{KOKORO_ONNX_RELEASE}/voices-v1.0.bin"
 
 
+def strip_emphasis_markup(text: str) -> str:
+    """Removes the **word** on-screen-highlight markup before TTS synthesis
+    — it's meant for src/emphasis.tsx to render as a colored span, not to be
+    read aloud as literal asterisks."""
+    return re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+
+
 def build_narration(content: dict) -> str:
     lines = [content["hook"], *(s["text"] for s in content["scenes"]), content["cta"]]
-    return " ... ".join(lines)
+    return " ... ".join(strip_emphasis_markup(line) for line in lines)
 
 
 def synthesize_elevenlabs(text: str) -> Path:
