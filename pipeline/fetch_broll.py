@@ -74,13 +74,23 @@ def _pick_video_file(video_files: list[dict[str, Any]]) -> dict[str, Any] | None
     return min(pool, key=lambda c: abs(c["width"] - TARGET_WIDTH))
 
 
+class BrollUnreachable(Exception):
+    """Raised when the Pexels API itself can't be reached (network/proxy
+    failure), as opposed to a search simply returning no results. Callers use
+    this to fail fast instead of retrying the same dead connection once per
+    segment."""
+
+
 def search_video(query: str, api_key: str) -> dict[str, Any] | None:
-    response = requests.get(
-        PEXELS_VIDEO_SEARCH_URL,
-        headers={"Authorization": api_key},
-        params={"query": query, "orientation": "portrait", "per_page": 5},
-        timeout=30,
-    )
+    try:
+        response = requests.get(
+            PEXELS_VIDEO_SEARCH_URL,
+            headers={"Authorization": api_key},
+            params={"query": query, "orientation": "portrait", "per_page": 5},
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise BrollUnreachable(str(exc)) from exc
     if response.status_code != 200:
         return None
     results = response.json().get("videos", [])
@@ -94,12 +104,15 @@ def search_video(query: str, api_key: str) -> dict[str, Any] | None:
 
 
 def search_photo(query: str, api_key: str) -> dict[str, Any] | None:
-    response = requests.get(
-        PEXELS_PHOTO_SEARCH_URL,
-        headers={"Authorization": api_key},
-        params={"query": query, "orientation": "portrait", "per_page": 5},
-        timeout=30,
-    )
+    try:
+        response = requests.get(
+            PEXELS_PHOTO_SEARCH_URL,
+            headers={"Authorization": api_key},
+            params={"query": query, "orientation": "portrait", "per_page": 5},
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise BrollUnreachable(str(exc)) from exc
     if response.status_code != 200:
         return None
     results = response.json().get("photos", [])
@@ -173,17 +186,30 @@ def main() -> None:
     PUBLIC_BROLL_DIR.mkdir(parents=True, exist_ok=True)
     print("Fetching B-roll...")
 
-    hook_result = fetch_broll_for_segment("hook", keyword_pool, api_key, "hook")
+    unreachable = False
+
+    def try_fetch(role: str, out_stem: str) -> dict[str, str] | None:
+        nonlocal unreachable
+        if unreachable:
+            return None
+        try:
+            return fetch_broll_for_segment(role, keyword_pool, api_key, out_stem)
+        except BrollUnreachable as exc:
+            unreachable = True
+            print(f"Pexels API unreachable ({exc}) — skipping remaining B-roll fetches.")
+            return None
+
+    hook_result = try_fetch("hook", "hook")
     if hook_result:
         content["hookBrollSrc"] = hook_result["brollSrc"]
         content["hookBrollType"] = hook_result["brollType"]
 
     for i, scene in enumerate(content["scenes"]):
-        result = fetch_broll_for_segment("scene", keyword_pool, api_key, f"scene-{i}")
+        result = try_fetch("scene", f"scene-{i}")
         if result:
             scene.update(result)
 
-    cta_result = fetch_broll_for_segment("cta", keyword_pool, api_key, "cta")
+    cta_result = try_fetch("cta", "cta")
     if cta_result:
         content["ctaBrollSrc"] = cta_result["brollSrc"]
         content["ctaBrollType"] = cta_result["brollType"]
