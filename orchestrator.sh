@@ -63,23 +63,26 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-echo "==> [1/4] Generating script + caption"
+echo "==> [1/5] Generating script + caption"
 CONTENT_ARGS=()
 [[ -n "$PILLAR" ]] && CONTENT_ARGS+=(--pillar "$PILLAR")
 [[ -n "$TOPIC_ID" ]] && CONTENT_ARGS+=(--topic-id "$TOPIC_ID")
 python3 pipeline/generate_content.py "${CONTENT_ARGS[@]}"
 
-echo "==> [2/4] Synthesizing voiceover"
+echo "==> [2/5] Fetching B-roll"
+python3 pipeline/fetch_broll.py
+
+echo "==> [3/5] Synthesizing voiceover"
 python3 pipeline/generate_audio.py
 
-echo "==> [3/4] Rendering video"
+echo "==> [4/5] Rendering video"
 mkdir -p out
 RENDER_ARGS=(--props=pipeline/output/props.json)
 [[ -n "${REMOTION_BROWSER_EXECUTABLE:-}" ]] && RENDER_ARGS+=(--browser-executable="$REMOTION_BROWSER_EXECUTABLE")
 [[ -n "${REMOTION_CHROME_MODE:-}" ]] && RENDER_ARGS+=(--chrome-mode="$REMOTION_CHROME_MODE")
 npx remotion render src/index.ts RealEstateReel "$OUTPUT_VIDEO" "${RENDER_ARGS[@]}"
 
-echo "==> [4/4] Publishing to Instagram"
+echo "==> [5/5] Publishing to Instagram"
 if [[ "$PUBLISH" == true ]]; then
   if [[ -z "$VIDEO_URL" ]]; then
     echo "Error: --publish requires --video-url (or VIDEO_PUBLIC_URL) pointing at a hosted copy of $OUTPUT_VIDEO" >&2

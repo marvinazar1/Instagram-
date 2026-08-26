@@ -11,6 +11,8 @@ out
 pipeline/output/
 public/audio/*
 !public/audio/.gitkeep
+public/broll/*
+!public/broll/.gitkeep
 
 # Downloaded TTS model weights (kokoro-onnx provider), ~350MB.
 pipeline/models/

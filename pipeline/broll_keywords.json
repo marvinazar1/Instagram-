@@ -1,0 +1,22 @@
+{
+  "market_updates": {
+    "hook": ["city skyline sunset", "modern house aerial view", "downtown real estate"],
+    "scene": ["real estate market chart", "for sale sign front yard", "house exterior daylight", "neighborhood street houses", "office real estate meeting"],
+    "cta": ["real estate agent smiling", "handshake real estate deal", "agent office desk"]
+  },
+  "buyer_tips": {
+    "hook": ["couple house tour", "modern house exterior", "family looking house"],
+    "scene": ["home inspection", "house walkthrough interior", "keys new home", "mortgage documents signing", "modern kitchen interior"],
+    "cta": ["realtor handshake client", "family new home keys", "happy family moving house"]
+  },
+  "seller_tips": {
+    "hook": ["luxury home staging", "beautiful house exterior", "sunset house facade"],
+    "scene": ["home staging living room", "professional photography camera house", "clean modern kitchen", "curb appeal landscaping", "interior design living room"],
+    "cta": ["sold sign house", "real estate agent handshake", "agent shaking hands outside house"]
+  },
+  "homeowner_advice": {
+    "hook": ["cozy home exterior", "house autumn season", "suburban house morning"],
+    "scene": ["home maintenance repair", "plumbing pipes house", "gutter cleaning house", "toolbox home repair", "house exterior close up"],
+    "cta": ["happy homeowner family", "house keys hand closeup", "family front porch house"]
+  }
+}

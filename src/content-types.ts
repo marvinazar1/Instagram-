@@ -6,11 +6,16 @@ export type WordTiming = {
   readonly emphasized: boolean;
 };
 
+export type BrollType = "video" | "photo";
+
 export type ReelScene = {
   readonly text: string;
   readonly durationInSeconds: number;
   /** Present only when pipeline/align_words.py successfully aligned this segment. */
   readonly words?: WordTiming[];
+  /** Path relative to `public/`. Present only when pipeline/fetch_broll.py found a match. */
+  readonly brollSrc?: string;
+  readonly brollType?: BrollType;
 };
 
 export type ReelContent = {
@@ -23,11 +28,15 @@ export type ReelContent = {
   readonly hookDurationInSeconds: number;
   /** Present only when pipeline/align_words.py successfully aligned the hook. */
   readonly hookWords?: WordTiming[];
+  readonly hookBrollSrc?: string;
+  readonly hookBrollType?: BrollType;
   readonly scenes: ReelScene[];
   readonly cta: string;
   readonly ctaDurationInSeconds: number;
   /** Present only when pipeline/align_words.py successfully aligned the CTA. */
   readonly ctaWords?: WordTiming[];
+  readonly ctaBrollSrc?: string;
+  readonly ctaBrollType?: BrollType;
   readonly caption: string;
   readonly hashtags: string[];
 };
@@ -38,6 +47,9 @@ export type ReelSegment = {
   readonly durationInSeconds: number;
   /** Real per-word timestamps from forced alignment; absent falls back to a simulated cascade. */
   readonly words?: WordTiming[];
+  /** Stock footage from pipeline/fetch_broll.py; absent falls back to the animated background only. */
+  readonly brollSrc?: string;
+  readonly brollType?: BrollType;
 };
 
 export const getSegments = (content: ReelContent): ReelSegment[] => {
@@ -47,6 +59,8 @@ export const getSegments = (content: ReelContent): ReelSegment[] => {
       text: content.hook,
       durationInSeconds: content.hookDurationInSeconds,
       words: content.hookWords,
+      brollSrc: content.hookBrollSrc,
+      brollType: content.hookBrollType,
     },
     ...content.scenes.map(
       (scene): ReelSegment => ({
@@ -54,6 +68,8 @@ export const getSegments = (content: ReelContent): ReelSegment[] => {
         text: scene.text,
         durationInSeconds: scene.durationInSeconds,
         words: scene.words,
+        brollSrc: scene.brollSrc,
+        brollType: scene.brollType,
       }),
     ),
     {
@@ -61,6 +77,8 @@ export const getSegments = (content: ReelContent): ReelSegment[] => {
       text: content.cta,
       durationInSeconds: content.ctaDurationInSeconds,
       words: content.ctaWords,
+      brollSrc: content.ctaBrollSrc,
+      brollType: content.ctaBrollType,
     },
   ];
 };

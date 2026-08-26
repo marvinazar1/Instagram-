@@ -10,6 +10,7 @@ import { TextCard } from "./components/TextCard";
 import { CaptionOverlay } from "./components/CaptionOverlay";
 import { AnimatedBackground } from "./components/AnimatedBackground";
 import { TransitionFlash } from "./components/TransitionFlash";
+import { Broll } from "./components/Broll";
 import { getSegments, type ReelContent } from "./content-types";
 
 export type VideoTemplateProps = {
@@ -35,6 +36,9 @@ export const VideoTemplate: React.FC<VideoTemplateProps> = ({
 
     return (
       <Sequence key={index} from={from} durationInFrames={durationInFrames}>
+        {segment.brollSrc && segment.brollType ? (
+          <Broll src={segment.brollSrc} type={segment.brollType} />
+        ) : null}
         {segment.kind === "scene" ? (
           <CaptionOverlay segment={segment} />
         ) : (
