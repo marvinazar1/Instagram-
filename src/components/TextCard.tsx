@@ -23,19 +23,25 @@ export const TextCard: React.FC<TextCardProps> = ({ segment, pillar }) => {
     config: { damping: 200, stiffness: 180 },
   });
 
+  const isCta = segment.kind === "cta";
+  const isHook = segment.kind === "hook";
+
+  // The CTA is always the last segment in the video — it must stay fully
+  // readable through the final frame instead of fading out like a mid-video
+  // transition would.
   const exitStart = durationInFrames - 12;
-  const exitOpacity = interpolate(frame, [exitStart, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exitOpacity = isCta
+    ? 1
+    : interpolate(frame, [exitStart, durationInFrames], [1, 0], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
 
   const scale = interpolate(entrance, [0, 1], [0.9, 1]);
   const translateY = interpolate(entrance, [0, 1], [40, 0]);
   const opacity = Math.min(entrance, exitOpacity);
 
   const gradient = PILLAR_GRADIENTS[pillar] ?? PILLAR_GRADIENTS.default;
-  const isCta = segment.kind === "cta";
-  const isHook = segment.kind === "hook";
 
   return (
     <AbsoluteFill style={{ background: gradient }}>
