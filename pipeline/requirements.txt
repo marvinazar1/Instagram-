@@ -2,14 +2,20 @@ anthropic>=0.40.0
 python-dotenv>=1.0.1
 requests>=2.32.0
 
+# Word-level caption sync (align_words.py) — used regardless of TTS provider.
+# pocketsphinx bundles its own acoustic model in the wheel, no external
+# model download required. num2words expands numbers/currency/percent into
+# spoken form for alignment matching.
+pocketsphinx>=5.1.1
+num2words>=0.5.13
+soundfile>=0.12.1
+numpy>=1.26.0
+
 # Optional, only needed for --provider kokoro in generate_audio.py:
 # kokoro
-# soundfile
-# numpy
 
 # Optional, only needed for --provider kokoro-onnx in generate_audio.py
 # (downloads weights from GitHub Releases instead of Hugging Face — use this
 # when huggingface.co isn't reachable from your network). Also requires the
 # espeak-ng system package (apt-get install espeak-ng / brew install espeak-ng).
 # kokoro-onnx
-# soundfile

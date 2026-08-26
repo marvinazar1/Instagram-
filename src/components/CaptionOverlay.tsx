@@ -45,7 +45,12 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({ segment }) => {
             maxWidth: "90%",
           }}
         >
-          <KineticText text={segment.text} fontSize={CAPTION_FONT_SIZE} staggerFrames={1} />
+          <KineticText
+            text={segment.text}
+            fontSize={CAPTION_FONT_SIZE}
+            staggerFrames={1}
+            words={segment.words}
+          />
         </div>
       </div>
     </AbsoluteFill>

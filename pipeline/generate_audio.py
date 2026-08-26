@@ -19,6 +19,14 @@ writes pipeline/output/props.json, the full --props payload for `remotion
 render` (content + audioSrc), so the render step in orchestrator.sh doesn't
 need to know which provider or file extension was used.
 
+After synthesis, also runs forced word-alignment (see align_words.py) against
+the real audio, regardless of which TTS provider produced it, and — when it
+succeeds — replaces the LLM's estimated segment durations with real measured
+ones and attaches a `words` timing array per segment for word-synced on-screen
+captions. If alignment isn't possible for any reason, this falls back to the
+original estimated-duration content unchanged; word sync is a bonus layer,
+never a requirement for the pipeline to run.
+
 Usage:
     python pipeline/generate_audio.py
     python pipeline/generate_audio.py --provider kokoro-onnx
@@ -36,6 +44,8 @@ from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
+
+from align_words import align_content
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PIPELINE_DIR = REPO_ROOT / "pipeline"
@@ -194,6 +204,14 @@ def main() -> None:
     PUBLIC_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     audio_path = PROVIDERS[args.provider](narration)
     print(f"Wrote audio to {audio_path}")
+
+    print("Running forced word-alignment for synced captions...")
+    aligned_content = align_content(content, audio_path)
+    if aligned_content is not None:
+        content = aligned_content
+        print("Word alignment succeeded — captions will be synced to real speech.")
+    else:
+        print("Word alignment unavailable — falling back to estimated timing.")
 
     audio_src = str(audio_path.relative_to(REPO_ROOT / "public"))
     props = {"content": content, "audioSrc": audio_src}

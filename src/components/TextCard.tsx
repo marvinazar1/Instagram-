@@ -95,7 +95,11 @@ export const TextCard: React.FC<TextCardProps> = ({ segment }) => {
               textShadow: "0 6px 24px rgba(0,0,0,0.45)",
             }}
           >
-            <KineticText text={segment.text} fontSize={isHook ? 76 : 58} />
+            <KineticText
+              text={segment.text}
+              fontSize={isHook ? 76 : 58}
+              words={segment.words}
+            />
           </div>
         </div>
       </AbsoluteFill>
