@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 """Turn a generated content.json into a voiceover track and Remotion props file.
 
-Supports two TTS providers, selected with --provider or the TTS_PROVIDER
+Supports three TTS providers, selected with --provider or the TTS_PROVIDER
 env var:
   - elevenlabs (default): calls the ElevenLabs REST API (ELEVENLABS_API_KEY,
     ELEVENLABS_VOICE_ID required)
-  - kokoro: uses the local, open-weight Kokoro TTS model (requires the
-    `kokoro` and `soundfile` packages to be installed separately)
+  - kokoro: uses the local, open-weight Kokoro TTS model via PyTorch
+    (requires the `kokoro` and `soundfile` packages; downloads weights from
+    Hugging Face Hub on first run)
+  - kokoro-onnx: the same Kokoro model via ONNX Runtime (requires the
+    `kokoro-onnx` and `soundfile` packages, plus the espeak-ng system
+    package). Prefer this over `kokoro` when Hugging Face isn't reachable —
+    it downloads the same weights from GitHub Releases instead, and this
+    script auto-downloads them into pipeline/models/ on first run.
 
 Writes the audio into public/audio/ (Remotion's static asset directory) and
 writes pipeline/output/props.json, the full --props payload for `remotion
@@ -15,7 +21,7 @@ need to know which provider or file extension was used.
 
 Usage:
     python pipeline/generate_audio.py
-    python pipeline/generate_audio.py --provider kokoro
+    python pipeline/generate_audio.py --provider kokoro-onnx
     python pipeline/generate_audio.py --input pipeline/output/content.json
 """
 
@@ -35,8 +41,15 @@ PIPELINE_DIR = REPO_ROOT / "pipeline"
 DEFAULT_INPUT_PATH = PIPELINE_DIR / "output" / "content.json"
 PROPS_OUTPUT_PATH = PIPELINE_DIR / "output" / "props.json"
 PUBLIC_AUDIO_DIR = REPO_ROOT / "public" / "audio"
+MODELS_DIR = PIPELINE_DIR / "models"
 
 ELEVENLABS_TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+
+KOKORO_ONNX_RELEASE = (
+    "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0"
+)
+KOKORO_ONNX_MODEL_URL = f"{KOKORO_ONNX_RELEASE}/kokoro-v1.0.onnx"
+KOKORO_ONNX_VOICES_URL = f"{KOKORO_ONNX_RELEASE}/voices-v1.0.bin"
 
 
 def build_narration(content: dict) -> str:
@@ -100,9 +113,51 @@ def synthesize_kokoro(text: str) -> Path:
     return output_path
 
 
+def _download_if_missing(path: Path, url: str) -> None:
+    if path.exists():
+        return
+    print(f"Downloading {url} -> {path} (first run only, this may take a while)...")
+    tmp_path = path.with_suffix(path.suffix + ".part")
+    with requests.get(url, stream=True, timeout=120) as response:
+        response.raise_for_status()
+        with tmp_path.open("wb") as f:
+            for chunk in response.iter_content(chunk_size=1 << 20):
+                f.write(chunk)
+    tmp_path.rename(path)
+
+
+def synthesize_kokoro_onnx(text: str) -> Path:
+    try:
+        from kokoro_onnx import Kokoro  # type: ignore[import-not-found]
+        import soundfile as sf  # type: ignore[import-not-found]
+    except ImportError as exc:
+        sys.exit(
+            "The kokoro-onnx provider requires the 'kokoro-onnx' and "
+            "'soundfile' packages (pip install kokoro-onnx soundfile), plus "
+            f"the espeak-ng system package. Missing: {exc.name}"
+        )
+
+    model_path = Path(os.environ.get("KOKORO_ONNX_MODEL_PATH", MODELS_DIR / "kokoro-v1.0.onnx"))
+    voices_path = Path(os.environ.get("KOKORO_ONNX_VOICES_PATH", MODELS_DIR / "voices-v1.0.bin"))
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+    _download_if_missing(model_path, KOKORO_ONNX_MODEL_URL)
+    _download_if_missing(voices_path, KOKORO_ONNX_VOICES_URL)
+
+    voice = os.environ.get("KOKORO_VOICE", "af_heart")
+    lang = os.environ.get("KOKORO_ONNX_LANG", "en-us")
+
+    kokoro = Kokoro(str(model_path), str(voices_path))
+    samples, sample_rate = kokoro.create(text, voice=voice, speed=1.0, lang=lang)
+
+    output_path = PUBLIC_AUDIO_DIR / "voiceover.wav"
+    sf.write(str(output_path), samples, sample_rate)
+    return output_path
+
+
 PROVIDERS = {
     "elevenlabs": synthesize_elevenlabs,
     "kokoro": synthesize_kokoro,
+    "kokoro-onnx": synthesize_kokoro_onnx,
 }
 
 

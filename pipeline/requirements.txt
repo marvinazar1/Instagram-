@@ -6,3 +6,10 @@ requests>=2.32.0
 # kokoro
 # soundfile
 # numpy
+
+# Optional, only needed for --provider kokoro-onnx in generate_audio.py
+# (downloads weights from GitHub Releases instead of Hugging Face — use this
+# when huggingface.co isn't reachable from your network). Also requires the
+# espeak-ng system package (apt-get install espeak-ng / brew install espeak-ng).
+# kokoro-onnx
+# soundfile
