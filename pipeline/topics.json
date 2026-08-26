@@ -1,192 +1,28 @@
 {
   "pillars": [
-    {
-      "id": "market_updates",
-      "label": "Market Updates",
-      "description": "Local and national market data, trends, and what they mean for buyers/sellers right now.",
-      "topics": [
-        {
-          "id": "mu_interest_rates",
-          "title": "What Falling Interest Rates Mean for Your Budget",
-          "key_points": [
-            "How a 1% rate drop changes monthly payments on a median-priced home",
-            "Why waiting for 'the perfect rate' can cost more in home appreciation",
-            "How to get pre-approved so you can move fast when rates dip"
-          ],
-          "cta": "DM me 'RATES' for a free payment breakdown at today's rate."
-        },
-        {
-          "id": "mu_inventory_shift",
-          "title": "Inventory Is Shifting — Here's What Buyers Should Know",
-          "key_points": [
-            "More listings hitting the market means more negotiating room",
-            "Days-on-market is climbing, which favors patient buyers",
-            "Sellers are more open to concessions and rate buydowns"
-          ],
-          "cta": "Comment 'INVENTORY' for this week's new listings in your area."
-        },
-        {
-          "id": "mu_price_trends",
-          "title": "Home Prices Just Did Something Unexpected",
-          "key_points": [
-            "Year-over-year price trend in plain English, no jargon",
-            "Which price bands are moving fastest",
-            "What this means if you're planning to list in the next 6 months"
-          ],
-          "cta": "Save this post and DM me for a free home value estimate."
-        },
-        {
-          "id": "mu_seasonal_timing",
-          "title": "The Best Month to Buy (Backed by Data)",
-          "key_points": [
-            "Seasonal patterns in listing volume and price reductions",
-            "Why late fall often has less competition",
-            "How to time an offer for maximum leverage"
-          ],
-          "cta": "Follow for weekly market breakdowns."
-        }
-      ]
-    },
-    {
-      "id": "buyer_tips",
-      "label": "Home Buying Tips",
-      "description": "Practical, tactical advice for people actively buying a home.",
-      "topics": [
-        {
-          "id": "bt_pre_approval",
-          "title": "Get Pre-Approved Before You Fall in Love With a House",
-          "key_points": [
-            "The difference between pre-qualified and pre-approved",
-            "Documents to have ready to speed up the process",
-            "Why sellers won't take your offer seriously without this"
-          ],
-          "cta": "DM me 'PREAPPROVED' and I'll connect you with a trusted lender."
-        },
-        {
-          "id": "bt_hidden_costs",
-          "title": "3 Hidden Costs First-Time Buyers Forget",
-          "key_points": [
-            "Closing costs beyond the down payment",
-            "Home inspection and appraisal fees",
-            "Moving, immediate repairs, and the first year of maintenance"
-          ],
-          "cta": "Save this so you don't get surprised at closing."
-        },
-        {
-          "id": "bt_offer_strategy",
-          "title": "How to Write an Offer That Wins in a Competitive Market",
-          "key_points": [
-            "Escalation clauses explained simply",
-            "When a personal letter to the seller actually helps",
-            "Why your agent's local relationships matter more than price alone"
-          ],
-          "cta": "Comment 'OFFER' for my free offer strategy checklist."
-        },
-        {
-          "id": "bt_red_flags",
-          "title": "5 Red Flags to Watch for During a Home Tour",
-          "key_points": [
-            "Signs of foundation or water damage",
-            "Electrical and plumbing tells that mean expensive repairs",
-            "Questions to ask the listing agent on the spot"
-          ],
-          "cta": "Follow before your next open house."
-        }
-      ]
-    },
-    {
-      "id": "seller_tips",
-      "label": "Home Selling Tips",
-      "description": "Advice for homeowners preparing to list and sell.",
-      "topics": [
-        {
-          "id": "st_staging",
-          "title": "The $500 Staging Fix That Adds Thousands to Your Sale",
-          "key_points": [
-            "Decluttering and depersonalizing before photos",
-            "Low-cost updates buyers notice most (paint, lighting, curb appeal)",
-            "Why professional photos outsell phone photos every time"
-          ],
-          "cta": "DM me 'STAGING' for my free pre-listing checklist."
-        },
-        {
-          "id": "st_pricing_strategy",
-          "title": "Why Overpricing Your Home Backfires",
-          "key_points": [
-            "How buyers and algorithms react to an overpriced listing",
-            "The stale-listing spiral and price-reduction stigma",
-            "How to price to attract competing offers instead"
-          ],
-          "cta": "Comment 'PRICE' for a free comparative market analysis."
-        },
-        {
-          "id": "st_timing_to_list",
-          "title": "Is Now a Good Time to Sell? Here's How to Tell",
-          "key_points": [
-            "Signs your local market favors sellers right now",
-            "How your equity position affects your next move",
-            "What to line up before you list (temp housing, next purchase)"
-          ],
-          "cta": "Save this and DM me to talk through your timeline."
-        },
-        {
-          "id": "st_negotiation",
-          "title": "How to Handle Multiple Offers Without Leaving Money on the Table",
-          "key_points": [
-            "Comparing offers beyond just price (contingencies, financing type)",
-            "Using an escalation deadline to create urgency",
-            "When to counter versus when to accept"
-          ],
-          "cta": "Follow for more seller strategy tips."
-        }
-      ]
-    },
-    {
-      "id": "neighborhood_lifestyle",
-      "label": "Neighborhood & Lifestyle",
-      "description": "Local area spotlights, lifestyle appeal, and community-driven content.",
-      "topics": [
-        {
-          "id": "nl_hidden_gem",
-          "title": "The Neighborhood Everyone's Sleeping On",
-          "key_points": [
-            "What makes this area undervalued right now",
-            "Nearby schools, parks, and walkability",
-            "Why prices here are likely to rise next"
-          ],
-          "cta": "Comment your favorite hidden-gem neighborhood."
-        },
-        {
-          "id": "nl_commute_lifestyle",
-          "title": "Best Neighborhoods for a Shorter Commute",
-          "key_points": [
-            "Areas with the fastest access to downtown/major employers",
-            "Tradeoffs between commute time and home size",
-            "Transit and highway access to consider"
-          ],
-          "cta": "DM me your workplace and I'll suggest 3 neighborhoods to check out."
-        },
-        {
-          "id": "nl_family_friendly",
-          "title": "Top Family-Friendly Neighborhoods Right Now",
-          "key_points": [
-            "School district highlights",
-            "Parks, playgrounds, and community events",
-            "Home types and price ranges typical for the area"
-          ],
-          "cta": "Save this for your next family home search."
-        },
-        {
-          "id": "nl_local_flavor",
-          "title": "A Day in the Life Living Here",
-          "key_points": [
-            "Favorite local coffee shop, restaurant, or trail",
-            "What weekends look like in this community",
-            "Why residents rarely want to leave"
-          ],
-          "cta": "Follow for more local spotlights every week."
-        }
-      ]
-    }
+    "market_updates",
+    "buyer_tips",
+    "seller_tips",
+    "homeowner_advice"
+  ],
+  "market_updates": [
+    "Average days on market vs. last year",
+    "How interest rate adjustments impact monthly buying power",
+    "Inventory absorption rates in your target zip codes"
+  ],
+  "buyer_tips": [
+    "Why getting pre-underwritten beats pre-qualified",
+    "3 hidden inspection red flags most buyers overlook",
+    "How appraisal gap clauses protect your offer"
+  ],
+  "seller_tips": [
+    "The 3 ROI home renovations before listing",
+    "Pricing mistakes that cause listings to sit stale",
+    "Why high-end photography and staging yield 5-10% higher offers"
+  ],
+  "homeowner_advice": [
+    "How to appeal your property tax assessment",
+    "Seasonal home maintenance to prevent a $10k plumbing bill",
+    "When to recast your mortgage instead of refinancing"
   ]
 }

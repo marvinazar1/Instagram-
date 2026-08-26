@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Generate a Reel script + Instagram caption for one topic using Claude.
 
-Picks a topic from the 4-pillar content bank (pipeline/topics.json),
-rotating pillars and avoiding recently-used topics, then asks Claude to
-turn it into a structured short-form video script matching the schema
-consumed by src/VideoTemplate.tsx.
+Picks a topic from the 4-pillar content bank (pipeline/topics.json --
+{"pillars": [id, ...], "<pillar_id>": ["topic title", ...]}), rotating
+pillars and avoiding recently-used topics, then asks Claude to turn it into
+a structured short-form video script matching the schema consumed by
+src/VideoTemplate.tsx.
 
 Usage:
     python pipeline/generate_content.py
     python pipeline/generate_content.py --pillar market_updates
-    python pipeline/generate_content.py --topic-id mu_interest_rates
+    python pipeline/generate_content.py --topic-id market_updates:average-days-on-market-vs-last-year
     python pipeline/generate_content.py --output pipeline/output/content.json
 """
 
@@ -19,6 +20,7 @@ import argparse
 import json
 import os
 import random
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -81,42 +83,50 @@ def save_history(topic_id: str, recent: list[str]) -> None:
         json.dump({"recent_topic_ids": updated}, f, indent=2)
 
 
+def slugify(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def pillar_label(pillar_id: str) -> str:
+    return pillar_id.replace("_", " ").title()
+
+
 def pick_topic(
     topics_data: dict[str, Any],
     pillar_id: str | None,
     topic_id: str | None,
     recent_topic_ids: list[str],
-) -> tuple[dict[str, Any], dict[str, Any]]:
-    pillars = topics_data["pillars"]
+) -> tuple[str, str, str]:
+    """Returns (pillar_id, topic_title, topic_id)."""
+    pillars: list[str] = topics_data["pillars"]
 
     if topic_id:
         for pillar in pillars:
-            for topic in pillar["topics"]:
-                if topic["id"] == topic_id:
-                    return pillar, topic
+            for title in topics_data[pillar]:
+                if f"{pillar}:{slugify(title)}" == topic_id:
+                    return pillar, title, topic_id
         raise SystemExit(f"No topic found with id '{topic_id}'")
 
     candidate_pillars = pillars
     if pillar_id:
-        candidate_pillars = [p for p in pillars if p["id"] == pillar_id]
-        if not candidate_pillars:
+        if pillar_id not in pillars:
             raise SystemExit(f"No pillar found with id '{pillar_id}'")
+        candidate_pillars = [pillar_id]
 
     pillar = random.choice(candidate_pillars)
-    fresh_topics = [t for t in pillar["topics"] if t["id"] not in recent_topic_ids]
-    topic = random.choice(fresh_topics or pillar["topics"])
-    return pillar, topic
+    titles = topics_data[pillar]
+    fresh_titles = [
+        title for title in titles if f"{pillar}:{slugify(title)}" not in recent_topic_ids
+    ]
+    title = random.choice(fresh_titles or titles)
+    return pillar, title, f"{pillar}:{slugify(title)}"
 
 
-def build_prompt(pillar: dict[str, Any], topic: dict[str, Any]) -> str:
-    key_points = "\n".join(f"- {point}" for point in topic["key_points"])
+def build_prompt(pillar: str, title: str) -> str:
     return f"""You are a social media scriptwriter for a residential real estate agent's Instagram Reels.
 
-Content pillar: {pillar['label']} ({pillar['description']})
-Topic: {topic['title']}
-Key points to cover:
-{key_points}
-Suggested call to action: {topic['cta']}
+Content pillar: {pillar_label(pillar)}
+Topic: {title}
 
 {SCHEMA_INSTRUCTIONS}"""
 
@@ -174,15 +184,15 @@ def main() -> None:
 
     topics_data = load_topics()
     recent_topic_ids = load_history()
-    pillar, topic = pick_topic(topics_data, args.pillar, args.topic_id, recent_topic_ids)
+    pillar, title, topic_id = pick_topic(topics_data, args.pillar, args.topic_id, recent_topic_ids)
 
-    print(f"Selected pillar '{pillar['label']}' / topic '{topic['title']}'")
-    prompt = build_prompt(pillar, topic)
+    print(f"Selected pillar '{pillar_label(pillar)}' / topic '{title}'")
+    prompt = build_prompt(pillar, title)
     generated = call_claude(prompt, args.model)
 
     content = {
-        "pillar": pillar["id"],
-        "pillarLabel": pillar["label"],
+        "pillar": pillar,
+        "pillarLabel": pillar_label(pillar),
         "agentName": args.agent_name,
         "hook": generated["hook"],
         "hookDurationInSeconds": generated["hook_duration_seconds"],
@@ -204,7 +214,7 @@ def main() -> None:
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(content, f, indent=2)
 
-    save_history(topic["id"], recent_topic_ids)
+    save_history(topic_id, recent_topic_ids)
     print(f"Wrote content to {output_path}")
 
 

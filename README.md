@@ -23,7 +23,7 @@ src/
 ├── content-types.ts       # Shared content schema (hook, scenes, cta, caption, hashtags)
 └── components/            # Header, TextCard, CaptionOverlay
 pipeline/
-├── topics.json             # 4-pillar content bank (market, buyer, seller, neighborhood)
+├── topics.json             # 4-pillar content bank (market, buyer, seller, homeowner advice)
 ├── generate_content.py     # Picks a topic and asks Claude for a script + IG caption
 ├── generate_audio.py       # TTS voiceover (ElevenLabs or local Kokoro)
 └── post_to_instagram.py    # Publishes the rendered Reel via the Instagram Graph API
