@@ -11,6 +11,11 @@ import {
   quoteCardSchema,
   QUOTE_CARD_DURATION,
 } from "./templates/QuoteCard/QuoteCard";
+import {
+  RelocationShowcase,
+  relocationShowcaseSchema,
+  relocationShowcaseDuration,
+} from "./templates/RelocationShowcase/RelocationShowcase";
 
 // Each <Composition> is an entry in the sidebar!
 // Both templates are built for Instagram Reels/Stories (1080x1920, 9:16)
@@ -70,6 +75,40 @@ export const RemotionRoot: React.FC = () => {
           attribution: "— Marvin Azar, The Azar Group",
           ctaText: "SAVE THIS FOR LATER",
           ctaSupporting: "Follow for more real talk on real estate",
+          handle: "@marvinazar | The Azar Group",
+        }}
+      />
+
+      <Composition
+        id="RelocationShowcase"
+        component={RelocationShowcase}
+        schema={relocationShowcaseSchema}
+        durationInFrames={relocationShowcaseDuration(2)}
+        fps={FPS}
+        width={VERTICAL_WIDTH}
+        height={VERTICAL_HEIGHT}
+        defaultProps={{
+          family: "navy",
+          originLabel: "Los Angeles, CA",
+          destinationLabel: "Boston, MA",
+          mapEyebrow: "Now Relocating Clients",
+          driveEyebrow: "12:00 PM",
+          driveHeadline: "Arriving At The Listing",
+          hookEyebrow: "Just Listed",
+          hookHeadline: "Your Next Chapter Starts Here",
+          hookHighlight: "Chapter",
+          photos: [
+            {
+              caption: "4 Bed | 3 Bath | 2,850 sqft",
+              detail: "123 Ocean View Drive",
+            },
+            {
+              caption: "Chef's Kitchen, Waterfront Views",
+              detail: "Fully renovated 2025",
+            },
+          ],
+          ctaText: "DM ME TO TOUR",
+          ctaSupporting: "Offered at $2,450,000",
           handle: "@marvinazar | The Azar Group",
         }}
       />
