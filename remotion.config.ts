@@ -18,4 +18,8 @@ const sandboxHeadlessShell =
   "/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell";
 if (existsSync(sandboxHeadlessShell)) {
   Config.setBrowserExecutable(sandboxHeadlessShell);
+  // The sandbox's egress proxy re-terminates TLS with its own CA, which this
+  // browser copy doesn't trust — needed for Chromium to fetch webfonts (e.g.
+  // Google Fonts) during rendering.
+  Config.setChromiumIgnoreCertificateErrors(true);
 }
