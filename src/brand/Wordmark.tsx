@@ -8,7 +8,7 @@ export const Wordmark: React.FC<{
 }> = ({ scale = 1 }) => {
   return (
     <Img
-      src={staticFile("brand/logo-lockup.jpg")}
+      src={staticFile("brand/logo-lockup-transparent.webp")}
       style={{
         width: 340 * scale,
         height: 340 * scale,
